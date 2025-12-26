@@ -14,32 +14,32 @@ const firstPromise = new Promise((resolve, reject) => {
   const onClick = () => {
     document.removeEventListener('click', onClick);
     clearTimeout(timer);
-    resolve(div);
+    resolve('First promise was resolved');
   };
 
   document.addEventListener('click', onClick);
 
   const timer = setTimeout(() => {
-    reject(div);
+    reject(new Error('First promise was rejected'));
   }, 3000);
 });
 
 /* ---------- SECOND PROMISE ---------- */
 let resolveSecond;
 const secondPromise = new Promise((resolve) => {
-  resolveSecond = resolve;
+  resolveSecond = (msg) => resolve(msg);
 });
 
 /* ---------- THIRD PROMISE ---------- */
 let resolveThird;
 const thirdPromise = new Promise((resolve) => {
-  resolveThird = resolve;
+  resolveThird = (msg) => resolve(msg);
 });
 
 /* ---------- EVENTS ---------- */
 document.addEventListener('click', () => {
   if (step === 2) {
-    resolveSecond?.();
+    resolveSecond?.('Second promise was resolved');
   }
 
   if (step === 3) {
@@ -52,7 +52,7 @@ document.addEventListener('contextmenu', (e) => {
   e.preventDefault();
 
   if (step === 2) {
-    resolveSecond?.();
+    resolveSecond?.('Second promise was resolved');
   }
 
   if (step === 3) {
@@ -64,45 +64,45 @@ document.addEventListener('contextmenu', (e) => {
 /* ---------- CHECK THIRD PROMISE ---------- */
 function checkThird() {
   if (leftClicked && rightClicked) {
-    resolveThird?.();
+    resolveThird?.('Third promise was resolved');
   }
 }
 
 /* ---------- HANDLERS ---------- */
-function successHandler() {
+function successHandler(message) {
   step = 2;
 
   div.className = 'success';
-  div.textContent = 'First promise was resolved';
+  div.textContent = message;
   document.body.appendChild(div);
 
   return secondPromise;
 }
 
-function successHandler2() {
+function successHandler2(message) {
   step = 3;
 
   leftClicked = false;
   rightClicked = false;
 
   div.className = 'success';
-  div.textContent = 'Second promise was resolved';
+  div.textContent = message;
   document.body.appendChild(div);
 
   return thirdPromise;
 }
 
-function successHandler3() {
+function successHandler3(message) {
   div.className = 'success';
-  div.textContent = 'Third promise was resolved';
+  div.textContent = message;
   document.body.appendChild(div);
 }
 
-function errorHandler() {
+function errorHandler(message) {
   step = 2;
 
   div.className = 'error';
-  div.textContent = 'First promise was rejected';
+  div.textContent = message;
   document.body.appendChild(div);
 
   return secondPromise;
